@@ -24,6 +24,7 @@ class RecipeParser:
             'recipeCuisine':self._parse_recipe_cuisine,
             'recipeIngredient':self._parse_recipe_ingredient,
             'recipeInstructions':self._parse_recipe_instructions,
+            'recipeYield':self._parse_recipe_yield,
             'prepTime':self._parse_prep_time,
             'totalTime':self._parse_total_time,
             'aggregateRating':self._parse_rating,
@@ -92,6 +93,12 @@ class RecipeParser:
 
         self._recipe_info['recipeIngredient'] = ingredients_list
            
+    def _parse_recipe_yield(self, recipe_yield):
+        self._recipe_info['recipeYield'] = recipe_yield 
+
+    def get_recipe_yield(self):
+        return self._recipe_info['recipeYield'] if 'recipeYield' in self._recipe_info else None
+
     def get_recipe_ingredient(self):
         return self._recipe_info['recipeIngredient'] if 'recipeIngredient' in self._recipe_info else None
 

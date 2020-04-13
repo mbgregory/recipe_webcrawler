@@ -121,7 +121,17 @@ class AllRecipesSpider(scrapy.Spider):
             else:
                 review_cnt = int(review_cnt_str.split()[0])
         return review_cnt 
-    
+   
+    def __get_recipe_yield(self, response):
+        recipe_yield_re = re.compile(r'\s*Servings Per Recipe:\s*(?P<yield>\d+)')
+        recipe_yield = None
+        recipe_yield_str = response.selector.xpath("//*[@class='nutrition-top light-underline']/text()").get()
+        if recipe_yield_str:
+            m = recipe_yield_re.match(recipe_yield_str)
+            if m:
+                recipe_yield = m.group('yield')
+        return recipe_yield
+         
     def __get_recipe_json(self, response):
         json_str = response.selector.xpath('//*[@type="application/ld+json"]/text()').get()
         return json_str
@@ -137,6 +147,7 @@ class AllRecipesSpider(scrapy.Spider):
                 recipe_item['name'] = rp.get_recipe_name()
                 recipe_item['ingredients'] = rp.get_recipe_ingredient()
                 recipe_item['instructions'] = rp.get_recipe_instructions()
+                recipe_item['servings'] = rp.get_recipe_yield()
                 nutrition = rp.get_nutrition()
                 recipe_item['calories'] = nutrition['calories']['quantity']
                 recipe_item['fat'] = nutrition['fatContent']['quantity']
@@ -160,6 +171,13 @@ class AllRecipesSpider(scrapy.Spider):
             recipe_item['rating'] = self.__get_rating(response)
             recipe_item['review_cnt'] = self.__get_review_cnt(response)
 
+      
+        if 'servings' not in recipe_item: 
+            recipe_item['servings'] = self.__get_recipe_yield(response)
+        elif recipe_item['servings'] == None:
+            recipe_item['servings'] = self.__get_recipe_yield(response)
+            
+ 
         if recipe_item.fields_populated():
             yield recipe_item
 
