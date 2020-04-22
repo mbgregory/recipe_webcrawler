@@ -19,7 +19,7 @@ class AllRecipesSpider(scrapy.Spider):
             'https://www.allrecipes.com/recipe/18324/roast-potatoes',
             'https://www.allrecipes.com/recipe/67952/roasted-brussels-sprouts/',
             'https://www.allrecipes.com/recipe/14399/the-best-chicken-salad-ever',
-            #'https://www.allrecipes.com/recipes/',
+            'https://www.allrecipes.com/recipes/',
         ]
 
         for url in urls:
@@ -148,29 +148,25 @@ class AllRecipesSpider(scrapy.Spider):
                 recipe_item['name'] = rp.get_recipe_name()
                 recipe_item['recipeIngredient'] = rp.get_recipe_ingredient()
                 recipe_item['recipeInstructions'] = rp.get_recipe_instructions()
-                recipe_item['recipeYield'] = rp.get_recipe_yield()
-                nutrition = rp.get_nutrition()
-                recipe_item['calories'] = nutrition['calories']['quantity']
-                recipe_item['fat'] = nutrition['fatContent']['quantity']
-                recipe_item['protein'] = nutrition['proteinContent']['quantity']
-                recipe_item['cholesterol'] = nutrition['cholesterolContent']['quantity']
-                recipe_item['sodium'] = nutrition['sodiumContent']['quantity']
+                #recipe_item['recipeYield'] = rp.get_recipe_yield()
+                recipe_item['nutrition'] = rp.get_nutrition()
                 recipe_item['recipeCategory'] = rp.get_recipe_category()
                 recipe_item['aggregateRating'] = rp.get_rating()
-                recipe_item['aggregateRating'].update({'reviewCount':rp.get_review_cnt()})
+                recipe_item['aggregateRating'].update({'ratingCount':rp.get_review_cnt()})
         else:
             recipe_item['name'] = self.__get_name(response)
             recipe_item['recipeIngredient'] = self.__get_ingredients(response)
             recipe_item['recipeInstructions'] = self.__get_instructions(response)
             recipe_item['recipeYield'] = self.__get_servings(response)
-            recipe_item['calories'] = self.__get_calories(response)
-            recipe_item['fat'] = self.__get_fat(response)
-            recipe_item['protein'] = self.__get_protein(response)
-            recipe_item['cholesterol'] = self.__get_cholesterol(response)
-            recipe_item['sodium'] = self.__get_sodium(response)
+            recipe_item['nutrition'] = dict()
+            recipe_item['nutrition']['calories'] = self.__get_calories(response)
+            recipe_item['nutrition']['fatContent'] = self.__get_fat(response)
+            recipe_item['nutrition']['proteinContent'] = self.__get_protein(response)
+            recipe_item['nutrition']['cholesterolContent'] = self.__get_cholesterol(response)
+            recipe_item['nutrition']['sodiumContent'] = self.__get_sodium(response)
             recipe_item['recipeCategory'] = self.__get_categories(response)
             recipe_item['aggregateRating'] = self.__get_rating(response)
-            recipe_item['aggregateRating'].update({'reviewCount':self.__get_review_cnt(response)})
+            recipe_item['aggregateRating'].update({'ratingCount':self.__get_review_cnt(response)})
 
       
         if 'recipeYield' not in recipe_item: 
@@ -178,15 +174,13 @@ class AllRecipesSpider(scrapy.Spider):
         elif recipe_item['recipeYield'] == None:
             recipe_item['recipeYield'] = self.__get_recipe_yield(response)
             
-
-        #self.logger.info(recipe_item) 
         if recipe_item.fields_populated():
             yield recipe_item
 
         allow_re = ['https://www.allrecipes\.com/recipe.*']
         deny_re = ['https://www.allrecipes\.com/recipe/\d+/.*/reviews/.*','https://www.allrecipes\.com/recipe/\d+/.*/photos/.*']
         links = LinkExtractor(allow=allow_re, deny=deny_re, allow_domains=['allrecipes.com'], unique=True).extract_links(response)
-        #for link in links:
-        #    if link is not None:
-        #        yield response.follow(link, callback=self.parse)
+        for link in links:
+            if link is not None:
+                yield response.follow(link, callback=self.parse)
 

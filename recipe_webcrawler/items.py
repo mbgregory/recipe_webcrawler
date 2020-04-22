@@ -16,11 +16,7 @@ class RecipeWebcrawlerItem(scrapy.Item):
     recipeIngredient = scrapy.Field()
     recipeInstructions = scrapy.Field()
     recipeYield = scrapy.Field()
-    calories = scrapy.Field()
-    fat = scrapy.Field()
-    protein = scrapy.Field()
-    cholesterol = scrapy.Field()
-    sodium = scrapy.Field()
+    nutrition = scrapy.Field()
     recipeCategory = scrapy.Field()
     aggregateRating = scrapy.Field()
     

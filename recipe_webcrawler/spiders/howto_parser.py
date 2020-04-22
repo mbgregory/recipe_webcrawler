@@ -16,7 +16,6 @@ class HowToParser:
 
     def _parse_time(self, time_str, key):
         time = SchemaUtilities.parse_iso8601_duration(time_str)
-        print(time)
         self._howto_info[key] = time
 
     def get_prep_time(self):

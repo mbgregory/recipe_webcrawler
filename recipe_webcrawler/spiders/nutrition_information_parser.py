@@ -47,15 +47,21 @@ class NutritionInformationParser:
             m = self._nutrition_re.match(nutrition_str)
             if m:
                 if m.group('quantity') and m.group('unit'):
-                    self._nutrition_info[nutrition_key] = {
-                        'quantity':float(m.group('quantity')),
-                        'unit':m.group('unit')
-                    }       
+                    self._nutrition_info[nutrition_key] = float(m.group('quantity'))
                 elif m.group('quantity'):
-                    self._nutrition_info[nutrition_key] = {
-                        'quantity':float(m.group('quantity')),
-                        'unit':default_unit[key]
-                    }
+                    self._nutrition_info[nutrition_key] = float(m.group('quantity'))
+                        
+            #if m:
+            #    if m.group('quantity') and m.group('unit'):
+            #        self._nutrition_info[nutrition_key] = {
+            #            'quantity':float(m.group('quantity')),
+            #            'unit':m.group('unit')
+            #        }       
+            #    elif m.group('quantity'):
+            #        self._nutrition_info[nutrition_key] = {
+            #            'quantity':float(m.group('quantity')),
+            #            'unit':default_unit[key]
+            #        }
 
     def get_calories(self):
         return self._nutrition_info['calories'] if 'calories' in self._nutrition_info else None

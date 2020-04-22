@@ -6,7 +6,7 @@ class SchemaUtilities:
     def parse_iso8601_duration(iso8601_duration_str):
         duration = None 
         duration_re = re.compile(r'P((?P<years>\d+)Y)?((?P<months>\d+)M)?((?P<days>\d+)D)?'
-                                  '(T((?P<hours>\d+)H)?((?P<minutes>\d+)M)((?P<seconds>\d+\.?\d*)S)?)?$')
+                                  '(T((?P<hours>\d+)H)?((?P<minutes>\d+)M)?((?P<seconds>\d+\.?\d*)S)?)?$')
                                   
         m = duration_re.match(iso8601_duration_str)
         if m:
