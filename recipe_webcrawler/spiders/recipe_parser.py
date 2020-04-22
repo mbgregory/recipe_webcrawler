@@ -24,7 +24,7 @@ class RecipeParser:
             'recipeCuisine':self._parse_recipe_cuisine,
             'recipeIngredient':self._parse_recipe_ingredient,
             'recipeInstructions':self._parse_recipe_instructions,
-            'recipeYield':self._parse_recipe_yield,
+            #'recipeYield':self._parse_recipe_yield,
             'prepTime':self._parse_prep_time,
             'totalTime':self._parse_total_time,
             'aggregateRating':self._parse_rating,
@@ -143,16 +143,16 @@ class RecipeParser:
 
     def _parse_rating(self, rating_info):
         self._recipe_info['aggregateRating'] = dict()
-        self._recipe_info['aggregateRating']['value'] = rating_info['ratingValue']
-        self._recipe_info['aggregateRating']['scale'] = rating_info['bestRating']
-        self._recipe_info['aggregateRating']['review_cnt'] = rating_info['ratingCount']
+        self._recipe_info['aggregateRating']['ratingValue'] = rating_info['ratingValue']
+        self._recipe_info['aggregateRating']['bestRating'] = rating_info['bestRating']
+        self._recipe_info['aggregateRating']['ratingCount'] = rating_info['ratingCount']
 
     def get_rating(self):
-        return {'value':self._recipe_info['aggregateRating']['value'], 'scale':self._recipe_info['aggregateRating']['scale']} if 'aggregateRating' in self._recipe_info else None
+        return {'ratingValue':self._recipe_info['aggregateRating']['ratingValue'], 'bestRating':self._recipe_info['aggregateRating']['bestRating']} if 'aggregateRating' in self._recipe_info else None
 
     def get_review_cnt(self):
         cnt = None
         if 'aggregateRating' in self._recipe_info:
-            if 'review_cnt' in self._recipe_info['aggregateRating']:
-                cnt = self._recipe_info['aggregateRating']['review_cnt']
+            if 'ratingCount' in self._recipe_info['aggregateRating']:
+                cnt = self._recipe_info['aggregateRating']['ratingCount']
         return cnt
